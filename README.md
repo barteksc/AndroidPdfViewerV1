@@ -2,23 +2,21 @@
 
 # Android PdfViewer
 
+__This is repo with version 1.x of [AndroidPdfViewer](https://github.com/barteksc/AndroidPdfViewer)__
+
 Library for displaying PDF documents on Android, with `animations`, `gestures`, `zoom` and `double tap` support.
 It is based on [PdfiumAndroid](https://github.com/barteksc/PdfiumAndroid) for decoding PDF files. Works on API 11 and higher.
 Licensed under Apache License 2.0.
 
-## What's new in 1.4.0?
-* Fix NPE and IndexOutOfBound bugs when rendering parts
-* Merge pull request by [paulo-sato-daitan](https://github.com/paulo-sato-daitan) for disabling page change animation
-* Merge pull request by [Miha-x64](https://github.com/Miha-x64) for drawing background if set on `PDFView`
-
-Next release is coming soon, it will introduce continuous scroll through whole document
-and some incompatibilities with current API (only few small).
+## What's new in 1.4.1?
+* Merge pull request by [skarempudi](https://github.com/skarempudi) to improve sample app
+* Fix loading document from subfolder in assets directory
 
 ## Installation
 
 Add to _build.gradle_:
 
-`compile 'com.github.barteksc:android-pdf-viewer:1.4.0'`
+`compile 'com.github.barteksc:android-pdf-viewer:1.4.1'`
 
 Library is available in jcenter repository, probably it'll be in Maven Central soon.
 

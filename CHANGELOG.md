@@ -1,3 +1,7 @@
+## 1.4.1 (2016-11-15)
+* Merge pull request by [skarempudi](https://github.com/skarempudi) to improve sample app
+* Fix loading document from subfolder in assets directory
+
 ## 1.4.0 (2016-07-25)
 * Fix NPE and IndexOutOfBound bugs when rendering parts
 * Merge pull request by [paulo-sato-daitan](https://github.com/paulo-sato-daitan) for disabling page change animation

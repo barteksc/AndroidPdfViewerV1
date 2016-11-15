@@ -15,12 +15,18 @@
  */
 package com.github.barteksc.sample;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.ScrollBar;
@@ -45,8 +51,10 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
     private static final String TAG = PDFViewActivity.class.getSimpleName();
 
     private final static int REQUEST_CODE = 42;
+    public static final int PERMISSION_CODE = 42042;
 
     public static final String SAMPLE_FILE = "sample.pdf";
+    public static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
 
     @ViewById
     PDFView pdfView;
@@ -64,9 +72,31 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
 
     @OptionsItem(R.id.pickFile)
     void pickFile() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this,
+                READ_EXTERNAL_STORAGE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{READ_EXTERNAL_STORAGE},
+                    PERMISSION_CODE
+            );
+
+            return;
+        }
+
+        launchPicker();
+    }
+
+    void launchPicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("application/pdf");
-        startActivityForResult(intent, REQUEST_CODE);
+        try {
+            startActivityForResult(intent, REQUEST_CODE);
+        } catch (ActivityNotFoundException e) {
+            //alert user that file manager not working
+            Toast.makeText(this, R.string.toast_pick_file_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @AfterViews
@@ -163,6 +193,24 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
 
             if (b.hasChildren()) {
                 printBookmarksTree(b.getChildren(), sep + "-");
+            }
+        }
+    }
+
+    /**
+     * Listener for response to user permission request
+     *
+     * @param requestCode  Check that permission request code matches
+     * @param permissions  Permissions that requested
+     * @param grantResults Whether permissions granted
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                launchPicker();
             }
         }
     }
