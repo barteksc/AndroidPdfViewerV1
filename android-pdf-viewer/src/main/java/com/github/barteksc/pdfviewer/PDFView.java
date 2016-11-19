@@ -299,7 +299,7 @@ public class PDFView extends SurfaceView {
         miniMapRequired = false;
         cacheManager = new CacheManager();
         animationManager = new AnimationManager(this);
-        dragPinchManager = new DragPinchManager(this);
+        dragPinchManager = new DragPinchManager(this, animationManager);
 
         paint = new Paint();
         debugPaint = new Paint();
@@ -1164,11 +1164,15 @@ public class PDFView extends SurfaceView {
     }
 
     public void resetZoomWithAnimation() {
-        animationManager.startZoomAnimation(zoom, minZoom);
+        zoomWithAnimation(minZoom);
+    }
+
+    public void zoomWithAnimation(float centerX, float centerY, float scale) {
+        animationManager.startZoomAnimation(centerX, centerY, zoom, scale);
     }
 
     public void zoomWithAnimation(float scale) {
-        animationManager.startZoomAnimation(zoom, scale);
+        animationManager.startZoomAnimation(getWidth() / 2, getHeight() / 2, zoom, scale);
     }
 
     public void setScrollBar(ScrollBar scrollBar) {

@@ -21,6 +21,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.PointF;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Scroller;
 
 
 /**
@@ -38,8 +39,13 @@ class AnimationManager {
 
     private ValueAnimator animation;
 
+    private Scroller scroller;
+
+    private ValueAnimator flingAnimation;
+
     public AnimationManager(PDFView pdfView) {
         this.pdfView = pdfView;
+        scroller = new Scroller(pdfView.getContext(), null, true);
     }
 
     public void startXAnimation(float xFrom, float xTo) {
@@ -64,23 +70,41 @@ class AnimationManager {
         animation.start();
     }
 
-    public void startZoomAnimation(float zoomFrom, float zoomTo) {
-        if (animation != null) {
-            animation.cancel();
-        }
+    public void startZoomAnimation(float centerX, float centerY, float zoomFrom, float zoomTo) {
+        stopAll();
         animation = ValueAnimator.ofFloat(zoomFrom, zoomTo);
         animation.setInterpolator(new DecelerateInterpolator());
-        ZoomAnimation zoomAnim = new ZoomAnimation();
+        ZoomAnimation zoomAnim = new ZoomAnimation(centerX, centerY);
         animation.addUpdateListener(zoomAnim);
         animation.addListener(zoomAnim);
         animation.setDuration(400);
         animation.start();
     }
 
+    public void startFlingAnimation(int startX, int startY, int velocityX, int velocityY, int minX, int maxX, int minY, int maxY) {
+        stopAll();
+        flingAnimation = ValueAnimator.ofFloat(0, 1);
+        FlingAnimation flingAnim = new FlingAnimation();
+        flingAnimation.addUpdateListener(flingAnim);
+        flingAnimation.addListener(flingAnim);
+        scroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
+        flingAnimation.setDuration(scroller.getDuration());
+        flingAnimation.start();
+    }
+
     public void stopAll() {
         if (animation != null) {
             animation.cancel();
             animation = null;
+        }
+        stopFling();
+    }
+
+    public void stopFling() {
+        if (flingAnimation != null) {
+            scroller.forceFinished(true);
+            flingAnimation.cancel();
+            flingAnimation = null;
         }
     }
 
@@ -106,10 +130,18 @@ class AnimationManager {
 
     class ZoomAnimation implements AnimatorUpdateListener, AnimatorListener {
 
+        private final float centerX;
+        private final float centerY;
+
+        public ZoomAnimation(float centerX, float centerY) {
+            this.centerX = centerX;
+            this.centerY = centerY;
+        }
+
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             float zoom = (Float) animation.getAnimatedValue();
-            pdfView.zoomCenteredTo(zoom, new PointF(pdfView.getWidth() / 2, pdfView.getHeight() / 2));
+            pdfView.zoomCenteredTo(zoom, new PointF(centerX, centerY));
         }
 
         @Override
@@ -129,6 +161,36 @@ class AnimationManager {
         public void onAnimationStart(Animator animation) {
         }
 
+    }
+
+    class FlingAnimation implements AnimatorUpdateListener, AnimatorListener {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            if (!scroller.isFinished()) {
+                scroller.computeScrollOffset();
+                pdfView.moveTo(scroller.getCurrX(), scroller.getCurrY());
+            }
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            pdfView.loadPages();
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
     }
 
 }
