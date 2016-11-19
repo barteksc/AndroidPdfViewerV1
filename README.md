@@ -2,21 +2,25 @@
 
 # Android PdfViewer
 
-__This is repo with version 1.x of [AndroidPdfViewer](https://github.com/barteksc/AndroidPdfViewer)__
+__This is repo with version 1.x of [AndroidPdfViewer](https://github.com/barteksc/AndroidPdfViewer).
+Version 1.x uses different engine for drawing document on canvas, so if you don't like 2.x version, try this.
+This version is still updated and supported.__
 
 Library for displaying PDF documents on Android, with `animations`, `gestures`, `zoom` and `double tap` support.
 It is based on [PdfiumAndroid](https://github.com/barteksc/PdfiumAndroid) for decoding PDF files. Works on API 11 and higher.
 Licensed under Apache License 2.0.
 
-## What's new in 1.4.1?
-* Merge pull request by [skarempudi](https://github.com/skarempudi) to improve sample app
-* Fix loading document from subfolder in assets directory
+## What's new in 1.5.0?
+* Add mechanism for providing documents from different sources - more info [here](#document-sources)
+* Update PdfiumAndroid to 1.5.0
+* Thanks to document sources and PdfiumAndroid update, in-memory documents are supported
+* Replace DragPinchListener with Android's GestureDetector to add support for fling gesture while zooming
 
 ## Installation
 
 Add to _build.gradle_:
 
-`compile 'com.github.barteksc:android-pdf-viewer:1.4.1'`
+`compile 'com.github.barteksc:android-pdf-viewer:1.5.0'`
 
 Library is available in jcenter repository, probably it'll be in Maven Central soon.
 
@@ -36,6 +40,12 @@ All available options with default values:
 pdfView.fromUri(Uri)
 or
 pdfView.fromFile(File)
+or
+pdfView.fromBytes(byte[])
+or
+pdfView.fromStream(InputStream)
+or
+pdfView.fromSource(DocumentSource)
 or
 pdfView.fromAsset(String)
     .pages(0, 2, 1, 3, 3, 3) // all pages are displayed by default
@@ -139,6 +149,22 @@ Scrollbar styling:
 
 **ScrollBarPageIndicator** is added to scrollbar automatically and is shown while dragging scrollbar handler,
  displaying number of page on current position. Its position is automatically calculated based on **ScrollBar**'s position.
+
+## Document sources
+Version 1.5.0 introduced _document sources_, which are just providers for PDF documents.
+Every provider implements **DocumentSource** interface.
+Predefined providers are available in **com.github.barteksc.pdfviewer.source** package and can be used as
+samples for creating custom ones.
+
+Predefined providers can be used with shorthand methods:
+```
+pdfView.fromUri(Uri)
+pdfView.fromFile(File)
+pdfView.fromBytes(byte[])
+pdfView.fromStream(InputStream)
+pdfView.fromAsset(String)
+```
+Custom providers may be used with `pdfView.fromSource(DocumentSource)` method.
 
 ## Additional options
 

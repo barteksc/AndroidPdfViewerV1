@@ -10,10 +10,10 @@ ext {
 
     libraryDescription = 'Android view for displaying PDFs rendered with PdfiumAndroid'
 
-    siteUrl = 'https://github.com/barteksc/AndroidPdfViewer'
-    gitUrl = 'https://github.com/barteksc/AndroidPdfViewer.git'
+    siteUrl = 'https://github.com/barteksc/AndroidPdfViewerV1'
+    gitUrl = 'https://github.com/barteksc/AndroidPdfViewerV1.git'
 
-    libraryVersion = '1.4.1'
+    libraryVersion = '1.5.0'
 
     developerId = 'barteksc'
     developerName = 'Bartosz Schiller'
@@ -32,13 +32,13 @@ android {
         minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
-        versionName "1.4.1"
+        versionName "1.5.0"
     }
 
 }
 
 dependencies {
-    compile 'com.github.barteksc:pdfium-android:1.4.0'
+    compile 'com.github.barteksc:pdfium-android:1.5.0'
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'

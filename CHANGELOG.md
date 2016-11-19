@@ -1,3 +1,9 @@
+## 1.5.0 (2016-11-19)
+* Add mechanism for providing documents from different sources - more info in README
+* Update PdfiumAndroid to 1.5.0
+* Thanks to document sources and PdfiumAndroid update, in-memory documents are supported
+* Replace DragPinchListener with Android's GestureDetector to add support for fling gesture while zooming
+
 ## 1.4.1 (2016-11-15)
 * Merge pull request by [skarempudi](https://github.com/skarempudi) to improve sample app
 * Fix loading document from subfolder in assets directory
