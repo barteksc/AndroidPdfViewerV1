@@ -171,7 +171,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
                 if (Math.abs(factor) < 0.1) {
                     return false;
                 }
-                diff = velocityY > 0 ? -1 : 1;
+                diff = velocityX > 0 ? -1 : 1;
             }
 
             flingPageChange = true;
