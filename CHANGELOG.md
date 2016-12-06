@@ -1,3 +1,6 @@
+## 1.5.1 (2016-12-06)
+* Fix bug with scrolling in horizontal mode
+
 ## 1.5.0 (2016-11-19)
 * Add mechanism for providing documents from different sources - more info in README
 * Update PdfiumAndroid to 1.5.0

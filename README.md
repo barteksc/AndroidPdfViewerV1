@@ -18,11 +18,13 @@ Licensed under Apache License 2.0.
 * **com.github.barteksc.exception.FileNotFoundException** is deprecated and all usages was removed.
 All exceptions are delivered to old Configurator#onError() listener
 
+1.5.1 fixes bug with scrolling in horizontal mode
+
 ## Installation
 
 Add to _build.gradle_:
 
-`compile 'com.github.barteksc:android-pdf-viewer:1.5.0'`
+`compile 'com.github.barteksc:android-pdf-viewer:1.5.1'`
 
 Library is available in jcenter repository, probably it'll be in Maven Central soon.
 
