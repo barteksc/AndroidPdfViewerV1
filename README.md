@@ -15,6 +15,8 @@ Licensed under Apache License 2.0.
 * Update PdfiumAndroid to 1.5.0
 * Thanks to document sources and PdfiumAndroid update, in-memory documents are supported
 * Replace DragPinchListener with Android's GestureDetector to add support for fling gesture while zooming
+* **com.github.barteksc.exception.FileNotFoundException** is deprecated and all usages was removed.
+All exceptions are delivered to old Configurator#onError() listener
 
 ## Installation
 
