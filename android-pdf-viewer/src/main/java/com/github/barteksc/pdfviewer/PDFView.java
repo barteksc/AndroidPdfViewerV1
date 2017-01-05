@@ -27,6 +27,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.HandlerThread;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -188,9 +189,13 @@ public class PDFView extends SurfaceView {
     private DecodingAsyncTask decodingAsyncTask;
 
     /**
-     * Async task always playing in the background and proceeding rendering tasks
+     * The thread {@link #renderingHandler} will run on
      */
-    private RenderingAsyncTask renderingAsyncTask;
+    private final HandlerThread renderingHandlerThread;
+    /**
+     * Handler always waiting in the background and rendering tasks
+     */
+    RenderingHandler renderingHandler;
 
     /**
      * Call back object to call when the PDF is loaded
@@ -291,6 +296,8 @@ public class PDFView extends SurfaceView {
      */
     public PDFView(Context context, AttributeSet set) {
         super(context, set);
+
+        renderingHandlerThread = new HandlerThread("PDF renderer");
 
         if (isInEditMode()) {
             return;
@@ -431,8 +438,8 @@ public class PDFView extends SurfaceView {
     public void recycle() {
 
         // Stop tasks
-        if (renderingAsyncTask != null) {
-            renderingAsyncTask.cancel(true);
+        if (renderingHandler != null) {
+            renderingHandler.removeMessages(RenderingHandler.MSG_RENDER_TASK);
         }
         if (decodingAsyncTask != null) {
             decodingAsyncTask.cancel(true);
@@ -641,7 +648,7 @@ public class PDFView extends SurfaceView {
         }
 
         // Cancel all current tasks
-        renderingAsyncTask.removeAllTasks();
+        renderingHandler.removeMessages(RenderingHandler.MSG_RENDER_TASK);
         cacheManager.makeANewSet();
 
         // Find current index in filtered user pages
@@ -704,7 +711,7 @@ public class PDFView extends SurfaceView {
                 (int) (optimalPageWidth * Constants.THUMBNAIL_RATIO), //
                 (int) (optimalPageHeight * Constants.THUMBNAIL_RATIO), //
                 new RectF(0, 0, 1, 1))) {
-            renderingAsyncTask.addRenderingTask(userPage, documentPage, //
+            renderingHandler.addRenderingTask(userPage, documentPage, //
                     (int) (optimalPageWidth * Constants.THUMBNAIL_RATIO), //
                     (int) (optimalPageHeight * Constants.THUMBNAIL_RATIO), //
                     new RectF(0, 0, 1, 1), true, 0, bestQuality, annotationRendering);
@@ -786,7 +793,7 @@ public class PDFView extends SurfaceView {
 
                         // If not already in cache, register the rendering
                         // task for further execution.
-                        renderingAsyncTask.addRenderingTask(userPage, documentPageFinal, //
+                        renderingHandler.addRenderingTask(userPage, documentPageFinal, //
                                 renderWidth, renderHeight, pageRelativeBounds, false, nbItemTreated, bestQuality, annotationRendering);
                     }
 
@@ -829,8 +836,11 @@ public class PDFView extends SurfaceView {
         state = State.LOADED;
         calculateOptimalWidthAndHeight();
 
-        renderingAsyncTask = new RenderingAsyncTask(this, pdfiumCore, pdfDocument);
-        renderingAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (!renderingHandlerThread.isAlive()) {
+            renderingHandlerThread.start();
+        }
+        renderingHandler = new RenderingHandler(renderingHandlerThread.getLooper(),
+                this, pdfiumCore, pdfDocument);
 
         if (scrollBar != null) {
             scrollBar.pdfLoaded();

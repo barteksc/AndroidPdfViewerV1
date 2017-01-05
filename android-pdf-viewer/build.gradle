@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/barteksc/AndroidPdfViewerV1'
     gitUrl = 'https://github.com/barteksc/AndroidPdfViewerV1.git'
 
-    libraryVersion = '1.5.1'
+    libraryVersion = '1.6.0'
 
     developerId = 'barteksc'
     developerName = 'Bartosz Schiller'
@@ -32,7 +32,7 @@ android {
         minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
-        versionName "1.5.1"
+        versionName "1.6.0"
     }
 
 }

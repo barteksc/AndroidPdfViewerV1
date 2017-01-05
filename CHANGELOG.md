@@ -1,3 +1,6 @@
+## 1.6.0 (2017-01-03)
+* Add change from AndroidPdfViewer 2.4.0 which replaces RenderingAsyncTask with Handler to simplify code and work with testing frameworks
+
 ## 1.5.1 (2016-12-06)
 * Fix bug with scrolling in horizontal mode
 
